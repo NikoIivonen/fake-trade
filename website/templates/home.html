@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block title %}My portfolio{% endblock %}
+
+{% block content %}
+<h1 align="center">{{ user.first_name }}'s portfolio</h1>
+<ul class="list-group list-group-flush" id="notes">
+    {% for note in user.notes %}
+        <li class="list-group-item">
+            {{ note.data }}
+            <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </li>
+    {% endfor %}
+</ul>
+<br/>
+<br/>
+<h3>${{ user.cash }}</h3>
+<h3>{{ user.bitcoin }} BTC</h3>
+<h2>Total: ${{ user.bitcoin*btcValue+ user.cash }}</h2>
+<br/>
+<br/>
+<form method="POST">
+    <div class="form-group">
+        <select class="form-select" name="options" id="options">
+            <option name="Buy">Buy</option>
+            <option name="Sell">Sell</option>
+        </select>
+        <input type="number" step="0.000001" name="note" id="note">
+        <label> BTC</label>
+    </div>
+    <div class="label">Current Value: <span id="numberLabel">$0</span></div>
+    <script>
+        document.getElementById('note').addEventListener('input', function() {
+            var inputValue = parseFloat(this.value);
+            var formattedValue = isNaN(inputValue) ? '0.00' : inputValue.toFixed(6);
+            document.getElementById('numberLabel').textContent = '$' + formattedValue*{{ btcValue }};
+        });
+    </script>
+    <br/>
+    <div align="center">
+        <button id="actionButton" type="submit" class="btn btn-primary">Buy</button>
+    </div>
+    <script>
+        document.getElementById('options').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex].text;
+            document.getElementById('actionButton').textContent = selectedOption;
+        });
+    </script>
+</form>
+{% endblock %}
