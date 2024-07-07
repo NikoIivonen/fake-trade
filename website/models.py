@@ -7,5 +7,4 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    cash = db.Column(db.Float)
-    bitcoin = db.Column(db.Float)
+    balance = db.Column(db.String(10000))

@@ -3,8 +3,19 @@ from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
+from . import SYMBOLS
 
 auth = Blueprint('auth', __name__)
+
+def starter_balance():
+    string = ''
+    for symbol in SYMBOLS:
+        value = '0'
+        if symbol == 'CASH':
+            value = '100000'
+        string += value + symbol
+
+    return string
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -61,7 +72,7 @@ def sign_up():
             elif len(password1) < 6:
                 flash('Password must be at least 6 characters', category='error')
             else:
-                new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), cash=100000, bitcoin=0)
+                new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), balance=starter_balance())
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user, remember=True)

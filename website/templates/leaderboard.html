@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}My portfolio{% endblock %}
+{% extends "base.html" %} {% block title %}Leaderboard{% endblock %}
 
 {% block content %}
 <br/>
@@ -6,13 +6,13 @@
 <br/>
 
 <ol type="1" class="list-group list-group-flush" id="board">
-    {% for trader in users %}
+    {% for trader, balance in balances.items() %}
           <li style="font-size: 22px" class="list-group-item">
-              {{ trader.first_name }}: ${{ "{:0,.2f}".format(trader.cash + trader.bitcoin*btc_price) }}
-              {% if (trader.cash + trader.bitcoin*btc_price - 100000)/100000 >= 0 %}
-                <span style="color: green; font-size: 24px">+{{ "{:0,.3f}".format(100*(trader.cash + trader.bitcoin*btc_price - 100000)/100000) }}%</span>
+              {{ trader.first_name }}: ${{ "{:0,.2f}".format(balance) }}
+              {% if (balance - 100000)/100000 >= 0 %}
+                <span style="color: green; font-size: 24px">+{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
               {% else %}
-                <span style="color: red; font-size: 24px">{{ "{:0,.3f}".format(100*(trader.cash + trader.bitcoin*btc_price - 100000)/100000) }}%</span>
+                <span style="color: red; font-size: 24px">{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
               {% endif %}
           </li>
     {% endfor %}
