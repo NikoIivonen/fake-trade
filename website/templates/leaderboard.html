@@ -7,8 +7,13 @@
 
 <ol type="1" class="list-group list-group-flush" id="board">
     {% for trader in users %}
-          <li class="list-group-item">
+          <li style="font-size: 22px" class="list-group-item">
               {{ trader.first_name }}: ${{ "{:0,.2f}".format(trader.cash + trader.bitcoin*btc_price) }}
+              {% if (trader.cash + trader.bitcoin*btc_price - 100000)/100000 >= 0 %}
+                <span style="color: green; font-size: 24px">+{{ "{:0,.3f}".format(100*(trader.cash + trader.bitcoin*btc_price - 100000)/100000) }}%</span>
+              {% else %}
+                <span style="color: red; font-size: 24px">{{ "{:0,.3f}".format(100*(trader.cash + trader.bitcoin*btc_price - 100000)/100000) }}%</span>
+              {% endif %}
           </li>
     {% endfor %}
 </ol>
