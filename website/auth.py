@@ -41,23 +41,31 @@ def sign_up():
         password2 = request.form.get('password2')
 
         user = User.query.filter_by(email=email).first()
+        error = False
         if user:
             flash('Email already exists.', category='error')
-
-        if len(email) < 4:
-            flash('Email must be at least 4 characters.', category='error')
-        elif len(first_name) < 2:
-            flash('Username must be at least 2 characters.', category='error')
-        elif password1 != password2:
-            flash('Passwords don\'t match.', category='error')
-        elif len(password1) < 7:
-            flash('Password must be at least 7 characters', category='error')
+            error = True
         else:
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), cash=100000, bitcoin=0)
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user, remember=True)
-            flash('Account created successfully!', category='success')
-            return redirect(url_for('views.home'))
+            user = User.query.filter_by(first_name=first_name).first()
+            if user:
+                flash('Username is already taken.', category='error')
+                error = True
+
+        if not error:
+            if len(email) < 4:
+                flash('Email is not valid.', category='error')
+            elif len(first_name) < 2:
+                flash('Username must be at least 2 characters.', category='error')
+            elif password1 != password2:
+                flash('Passwords don\'t match.', category='error')
+            elif len(password1) < 6:
+                flash('Password must be at least 6 characters', category='error')
+            else:
+                new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), cash=100000, bitcoin=0)
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user, remember=True)
+                flash('Account created successfully!', category='success')
+                return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)

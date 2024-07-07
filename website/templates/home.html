@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block title %}My portfolio{% endblock %}
 
 {% block content %}
+<br/>
 <h1 align="center">{{ user.first_name }}'s portfolio</h1>
 <ul class="list-group list-group-flush" id="notes">
     {% for note in user.notes %}
@@ -14,9 +15,9 @@
 </ul>
 <br/>
 <br/>
-<h3>${{ user.cash }}</h3>
-<h3>{{ user.bitcoin }} BTC</h3>
-<h2>Total: ${{ user.bitcoin*btcValue+ user.cash }}</h2>
+<h3>${{ "{:0,.2f}".format(user.cash) }}</h3>
+<h3>{{ "{:.6f}".format(user.bitcoin) }} BTC</h3>
+<h2>Total: ${{ "{:0,.2f}".format(user.cash + user.bitcoin*btcValue) }}</h2>
 <br/>
 <br/>
 <form method="POST">
@@ -28,12 +29,14 @@
         <input type="number" step="0.000001" name="note" id="note">
         <label> BTC</label>
     </div>
+    <h4>1 BTC = ${{ "{:0,.2f}".format(btcValue) }}</h4>
     <div class="label">Current Value: <span id="numberLabel">$0</span></div>
     <script>
         document.getElementById('note').addEventListener('input', function() {
             var inputValue = parseFloat(this.value);
             var formattedValue = isNaN(inputValue) ? '0.00' : inputValue.toFixed(6);
-            document.getElementById('numberLabel').textContent = '$' + formattedValue*{{ btcValue }};
+            var total = formattedValue*{{ btcValue }}
+            document.getElementById('numberLabel').textContent = '$' + total.toLocaleString();
         });
     </script>
     <br/>
