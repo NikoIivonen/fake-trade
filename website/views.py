@@ -228,10 +228,10 @@ def pay_back_loan(symbol):
     new_interests = get_new_interests_str(current_user, symbol, 0)
     current_user.expire_dates = new_expires
     current_user.loan_amounts = new_amounts
-    print(current_user.interests)
+
     current_user.interests = new_interests
     db.session.commit()
-    print(current_user.interests)
+
 
 views = Blueprint('views', __name__)
 
