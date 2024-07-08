@@ -7,14 +7,27 @@
 
 <ol type="1" class="list-group list-group-flush" id="board">
     {% for trader, balance in balances.items() %}
-          <li style="font-size: 22px" class="list-group-item">
-              {{ trader.first_name }}: ${{ "{:0,.2f}".format(balance) }}
-              {% if (balance - 100000)/100000 >= 0 %}
-                <span style="color: green; font-size: 24px">+{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
-              {% else %}
-                <span style="color: red; font-size: 24px">{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
+
+              {% if not trader.closed %}
+                <li style="font-size: 22px" class="list-group-item">
+                  {{ trader.first_name }}: ${{ "{:0,.2f}".format(balance) }}
+                  {% if (balance - 100000)/100000 >= 0 %}
+                        <span style="color: green; font-size: 24px">+{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
+                  {% else %}
+                        <span style="color: red; font-size: 24px">{{ "{:0,.3f}".format(100*(balance - 100000)/100000) }}%</span>
+                  {% endif %}
+                    </li>
               {% endif %}
-          </li>
+    {% endfor %}
+    {% for trader, balance in balances.items() %}
+
+              {% if trader.closed %}
+                <li style="font-size: 22px" class="list-group-item">
+                  {{ trader.first_name }}:
+                  <span style="color: red; font-size: 24px">Account closed</span>
+                    </li>
+              {% endif %}
+
     {% endfor %}
 </ol>
 

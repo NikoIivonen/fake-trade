@@ -5,7 +5,7 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
-SYMBOLS = ['CASH', 'BTC', 'ADA']
+SYMBOLS = ['CASH', 'BTC', 'ETH', 'BNB', 'ADA', 'SOL', 'DOGE', 'AXS']
 
 def create_app():
     app = Flask(__name__)

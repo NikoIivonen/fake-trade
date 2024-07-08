@@ -8,3 +8,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     balance = db.Column(db.String(10000))
+    loan_amounts = db.Column(db.String(10000))
+    expire_dates = db.Column(db.String(10000))
+    closed = db.Column(db.Boolean)
+    interests = db.Column(db.String(10000))

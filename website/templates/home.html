@@ -10,9 +10,9 @@
         {% if amount > 0 %}
             <li style="font-size: 22px" class="list-group-item">
                 {% if symbol == 'CASH' %}
-                    ${{ "{:.2f}".format(amount) }}
+                    ${{ "{:0,.2f}".format(amount) }}
                 {% else %}
-                    {{ "{:.6f}".format(amount) }} {{ symbol }}
+                    {{ "{:0,.6f}".format(amount) }} {{ symbol }}
                 {% endif %}
         {% endif %}
         </li>
@@ -26,6 +26,7 @@
     {% endfor %}
     Total: ${{ "{:0,.2f}".format(ns.x) }}
 </h4>
+<h4>Actual: ${{ "{:0,.2f}".format(actual) }}</h4>
 
 <br/>
 <br/>

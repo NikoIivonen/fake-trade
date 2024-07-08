@@ -17,6 +17,24 @@ def starter_balance():
 
     return string
 
+def starter_loans():
+    string = ''
+    for symbol in SYMBOLS:
+        if symbol != 'CASH':
+            value = '0'
+            string += value + symbol
+
+    return string
+
+def starter_expires():
+    string = ''
+    for symbol in SYMBOLS:
+        if symbol != 'CASH':
+            value = '0'
+            string += value + symbol
+
+    return string
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -72,7 +90,7 @@ def sign_up():
             elif len(password1) < 6:
                 flash('Password must be at least 6 characters', category='error')
             else:
-                new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), balance=starter_balance())
+                new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='scrypt'), balance=starter_balance(), loan_amounts=starter_loans(), expire_dates=starter_expires(), closed=False, interests=starter_loans())
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user, remember=True)

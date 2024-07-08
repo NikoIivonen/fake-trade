@@ -1,0 +1,119 @@
+{% extends "base.html" %} {% block title %}Loan{% endblock %}
+
+{% block content %}
+<br/>
+<h1>Borrow assets</h1>
+<br/>
+
+<form method="POST">
+    <div class="form-group">
+        <input type="number" step="0.01" name="amount" id="amount">
+        <select class="form-select" name="coin-symbol" id="coin-symbol">
+            {% for symbol, value in cryptoValues.items() %}
+                {% if symbol != 'CASH' %}
+                    <option name=symbol>{{ symbol }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <span style="font-size:18px">Expires in </span>
+        <select class="form-select" name="period" id="period">
+            {% for time, interest in periods.items() %}
+                <option name=expires>{{ time }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div><span style="font-size:16px">Interest/week: 1%</span></div>
+    <div class="label">Borrowed value: <span id="numberLabel">$0</span></div>
+    <br />
+    <div><span style="color: orange; font-size:18px">Note that you can borrow only twice the value of your portfolio.</span></div>
+    <script>
+        const cryptoValues = {{ cryptoValues | tojson }}
+        document.getElementById('amount').addEventListener('input', function() {
+            var inputValue = parseFloat(this.value);
+            var formattedValue = isNaN(inputValue) ? '0.00' : inputValue.toFixed(6);
+            var sym = document.getElementById('coin-symbol').value;
+            var value = cryptoValues[sym];
+            var total = formattedValue*value;
+            document.getElementById('numberLabel').textContent = '$' + total.toLocaleString();
+        });
+    </script>
+    <script>
+        document.getElementById('coin-symbol').addEventListener('change', function() {
+            var inputValue = parseFloat(document.getElementById('amount').value);
+            var formattedValue = isNaN(inputValue) ? '0.00' : inputValue.toFixed(6);
+            var sym = document.getElementById('coin-symbol').value;
+            var value = cryptoValues[sym];
+            var total = formattedValue*value;
+            document.getElementById('numberLabel').textContent = '$' + total.toLocaleString();
+        });
+    </script>
+    <br/>
+    <div>
+        <button id="actionButton" type="submit" class="btn btn-primary">Loan</button>
+    </div>
+</form>
+
+<br />
+<br />
+<h4>My loans</h4>
+
+{% if show_table %}
+    <table style="width: 30%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid black; padding: 15px; background-color: #f2f2f2;">Asset</th>
+                <th style="border: 1px solid black; padding: 15px; background-color: #f2f2f2;">Debt (including interest)</th>
+                <th style="border: 1px solid black; padding: 15px; background-color: #f2f2f2;">My balance</th>
+                <th style="border: 1px solid black; padding: 15px; background-color: #f2f2f2;">Expiration date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in loans %}
+            <tr>
+                <td style="font-size: 18px; border: 1px solid black; padding: 15px;">{{ row[0] }}</td>
+                <td style="font-size: 18px; border: 1px solid black; padding: 15px;">{{ row[1] }}</td>
+                {% if row[2] >= row[1] %}
+                    <td style="font-size: 18px; color: green; border: 1px solid black; padding: 15px;">{{ row[2] }}</td>
+                {% else %}
+                    <td style="font-size: 18px; color: red; border: 1px solid black; padding: 15px;">{{ row[2] }}</td>
+                {% endif %}
+                <td style="font-size: 18px; border: 1px solid black; padding: 15px;">{{ row[3] }}</td>
+                <td style="padding: 15px;">
+                    <button onclick="printRow(this)">Pay back</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div><span style="font-size:18px">You don't have any active loans.</span></div>
+{% endif %}
+
+<script>
+        function printRow(button) {
+            // Find the row containing the button
+            var row = button.parentNode.parentNode;
+            // Get the data from the row
+            var rowData = [];
+            for (var i = 0; i < row.cells.length - 1; i++) { // Exclude the last cell (button)
+                rowData.push(row.cells[i].innerText);
+            }
+            // Send the data to the server
+            fetch('/loan-pay-back', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ row_data: rowData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("1234a");
+                window.location.href = "/loan";
+            });
+        }
+</script>
+
+{% endblock %}
