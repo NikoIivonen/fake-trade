@@ -9,7 +9,6 @@ SYMBOLS = ['CASH', 'BTC', 'ETH', 'BNB', 'ADA', 'SOL', 'DOGE', 'AXS']
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'jdowekowaallsoweoqokpo'
     app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres://u6armav0gp0igh:p7b1adda8584e9ed14daabbcf67d7a35587f9547bfedb6e2a5ded292ec71cea99@cat670aihdrkt1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/db93v7f0ors0qc'
     db.init_app(app)
 
